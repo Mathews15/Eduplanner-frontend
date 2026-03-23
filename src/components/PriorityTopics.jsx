@@ -6,8 +6,16 @@ function PriorityTopics({ refresh }) {
 const [topics,setTopics] = useState([]);
 
 const load = () => {
-  API.get("/topics/priority")
-    .then(res => setTopics(res.data));
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) {
+    console.log("No user found");
+    return;
+  }
+
+  API.get(`/topics/priority/${user.id}`)
+    .then(res => setTopics(res.data))
+    .catch(err => console.error(err));
 };
 
 useEffect(()=>{
