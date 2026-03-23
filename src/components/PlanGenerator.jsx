@@ -20,7 +20,6 @@ const generatePlan = async ()=>{
 
   alert("Plan Generated");
 
-  onSuccess();
 
  } catch(err){
   console.error(err);
