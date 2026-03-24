@@ -6,7 +6,6 @@ function PlanGenerator({ user, onSuccess }) {
   const [days, setDays] = useState("");
 
   const generatePlan = async () => {
-
     try {
 
       const today = new Date().toLocaleDateString('en-CA');
@@ -20,7 +19,7 @@ function PlanGenerator({ user, onSuccess }) {
 
       alert("Plan Generated");
 
-      // 🔥 THIS LINE IS MISSING (VERY IMPORTANT)
+      // 🔥 THIS FIXES EVERYTHING
       if (onSuccess) onSuccess();
 
     } catch (err) {
@@ -30,7 +29,6 @@ function PlanGenerator({ user, onSuccess }) {
 
   return (
     <div className="card">
-
       <h3>Generate Plan</h3>
 
       <input
@@ -41,7 +39,6 @@ function PlanGenerator({ user, onSuccess }) {
       <button onClick={generatePlan}>
         Generate
       </button>
-
     </div>
   );
 }

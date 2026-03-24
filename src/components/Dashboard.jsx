@@ -23,7 +23,7 @@ return(
 <div className="grid">
   <SubjectForm user={user} onSuccess={triggerRefresh}/>
   <TopicForm user={user} refresh={refresh}/>
-  <PlanGenerator user={user} onSuccess={() => setRefresh(!refresh)}/>
+  <PlanGenerator user={user} onSuccess={() => setRefresh(prev => !prev)}/>
 </div>
 
 <PriorityTopics user={user} refresh={refresh}/>
