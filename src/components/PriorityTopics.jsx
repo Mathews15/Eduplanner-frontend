@@ -15,8 +15,10 @@ function PriorityTopics({ refresh }) {
     }
 
     API.get(`/topics/priority/${user.id}`)
-      .then(res => setTopics(res.data))
-      .catch(err => console.error(err));
+  .then(res => {
+    console.log("TOPICS:", res.data); // 🔥 ADD THIS
+    setTopics(res.data);
+  })
   };
 
   useEffect(() => {
