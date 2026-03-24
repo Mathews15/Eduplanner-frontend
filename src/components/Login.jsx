@@ -3,71 +3,65 @@ import API from "../services/api"
 
 function Login({ setUser, setShowRegister }) {
 
-const [email,setEmail] = useState("")
-const [password,setPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-const loginUser = async () => {
+  const loginUser = async () => {
+    try {
 
- try{
+      const res = await API.post("/auth/login", {
+        email,
+        password
+      })
 
-  const res = await API.post("/auth/login",{
-   email,
-   password
-  })
+      // ✅ STORE USER EVERYWHERE
+      setUser(res.data)
+      localStorage.setItem("user", JSON.stringify(res.data))
 
-  console.log(res.data)
+      alert("Login Successful")
 
-  setUser(res.data)   // store logged-in user
-  alert("Login Successful")
+    } catch (error) {
+      console.error(error)
+      alert("Invalid Credentials")
+    }
+  }
 
- }catch(error){
-  console.error(error)
-  alert("Invalid Credentials")
- }
+  return (
+    <div className="auth-container">
+      <div className="auth-card">
 
-}
+        <h2>Login</h2>
 
-return(
+        <input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-<div className="auth-container">
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-<div className="auth-card">
+        <button onClick={loginUser}>
+          Login
+        </button>
 
-<h2>Login</h2>
+        <p className="auth-text">
+          Don't have an account?
+          <span
+            className="auth-link"
+            onClick={() => setShowRegister(true)}
+          >
+            {" "}Register
+          </span>
+        </p>
 
-<input
-placeholder="Email"
-value={email}
-onChange={(e)=>setEmail(e.target.value)}
-/>
-
-<input
-type="password"
-placeholder="Password"
-value={password}
-onChange={(e)=>setPassword(e.target.value)}
-/>
-
-<button onClick={loginUser}>
-Login
-</button>
-
-<p className="auth-text">
-Don't have an account?
-<span
-className="auth-link"
-onClick={()=>setShowRegister(true)}
->
- Register
-</span>
-</p>
-
-</div>
-
-</div>
-
-)
-
+      </div>
+    </div>
+  )
 }
 
 export default Login

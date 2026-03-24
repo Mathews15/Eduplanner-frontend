@@ -3,85 +3,83 @@ import API from "../services/api";
 
 function Register({ setShowRegister }) {
 
-const [name,setName] = useState("");
-const [email,setEmail] = useState("");
-const [password,setPassword] = useState("");
-const [dailyStudyHours,setDailyStudyHours] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [dailyStudyHours, setDailyStudyHours] = useState("");
 
-const registerUser = async () => {
+  const registerUser = async () => {
+    try {
 
- try{
+      const res = await API.post("/auth/register", {
+        name,
+        email,
+        password,
+        dailyStudyHours
+      });
 
-  const res = await API.post("/auth/register",{
-   name,
-   email,
-   password,
-   dailyStudyHours
-  });
+      // ✅ SAVE USER
+      localStorage.setItem("user", JSON.stringify(res.data));
 
-  console.log(res.data);
-  alert("User Registered Successfully");
+      alert("User Registered Successfully");
 
- }catch(error){
-  console.error(error);
-  alert("Registration Failed");
- }
+      // optional
+      window.location.reload();
 
-};
+    } catch (error) {
+      console.error(error);
+      alert("Registration Failed");
+    }
+  };
 
-return(
+  return (
+    <div className="auth-container">
+      <div className="auth-card">
 
-<div className="auth-container">
+        <h2>Create Account</h2>
 
-<div className="auth-card">
+        <input
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-<h2>Create Account</h2>
+        <input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-<input
-placeholder="Name"
-value={name}
-onChange={(e)=>setName(e.target.value)}
-/>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-<input
-placeholder="Email"
-value={email}
-onChange={(e)=>setEmail(e.target.value)}
-/>
+        <input
+          placeholder="Daily Study Hours"
+          value={dailyStudyHours}
+          onChange={(e) => setDailyStudyHours(e.target.value)}
+        />
 
-<input
-type="password"
-placeholder="Password"
-value={password}
-onChange={(e)=>setPassword(e.target.value)}
-/>
+        <button onClick={registerUser}>
+          Create Account
+        </button>
 
-<input
-placeholder="Daily Study Hours"
-value={dailyStudyHours}
-onChange={(e)=>setDailyStudyHours(e.target.value)}
-/>
+        <p className="auth-text">
+          Already have an account?
+          <span
+            className="auth-link"
+            onClick={() => setShowRegister(false)}
+          >
+            {" "}Login
+          </span>
+        </p>
 
-<button onClick={registerUser}>
-Create Account
-</button>
-
-<p className="auth-text">
-Already have an account?
-<span
-className="auth-link"
-onClick={()=>setShowRegister(false)}
->
- Login
-</span>
-</p>
-
-</div>
-
-</div>
-
-)
-
+      </div>
+    </div>
+  )
 }
 
-export default Register
+export default Register;

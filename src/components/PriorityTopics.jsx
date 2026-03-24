@@ -6,6 +6,7 @@ function PriorityTopics({ refresh }) {
   const [topics, setTopics] = useState([]);
 
   const load = () => {
+
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
@@ -14,14 +15,7 @@ function PriorityTopics({ refresh }) {
     }
 
     API.get(`/topics/priority/${user.id}`)
-      .then(res => {
-        // 🔥 filter only current user's topics (extra safety)
-        const filtered = res.data.filter(
-          t => t.subject?.user?.id === user.id
-        );
-
-        setTopics(filtered);
-      })
+      .then(res => setTopics(res.data))
       .catch(err => console.error(err));
   };
 
@@ -46,14 +40,12 @@ function PriorityTopics({ refresh }) {
         <tbody>
           {topics.length === 0 ? (
             <tr>
-              <td colSpan="2" style={{ textAlign: "center" }}>
-                No priority topics
-              </td>
+              <td colSpan="2">No priority topics</td>
             </tr>
           ) : (
             topics.map(t => (
               <tr key={t.id}>
-                <td>{t.subject?.name || "No Subject"}</td>
+                <td>{t.subject?.name}</td>
                 <td>{t.name}</td>
               </tr>
             ))
