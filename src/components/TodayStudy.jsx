@@ -5,10 +5,7 @@ function TodayStudy({ user,refresh}) {
 
   const [sessions, setSessions] = useState([]);
 
-  const onSuccess = () => {
-    console.log("Success");
-  };
-  
+
   const loadToday = async () => {
     const res = await API.get(`/sessions/user/${user.id}`);
 
