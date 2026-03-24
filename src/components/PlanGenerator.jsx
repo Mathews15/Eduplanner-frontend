@@ -3,45 +3,47 @@ import API from "../services/api";
 
 function PlanGenerator({ user, onSuccess }) {
 
-const [days,setDays] = useState("");
+  const [days, setDays] = useState("");
 
-const generatePlan = async ()=>{
+  const generatePlan = async () => {
 
- try {
+    try {
 
-  const today = new Date().toLocaleDateString('en-CA');
+      const today = new Date().toLocaleDateString('en-CA');
 
-  await API.post("/plan/generate",{
-    userId:user.id,
-    startDate: today,
-    days,
-    hoursPerDay:user.dailyStudyHours
-  });
+      await API.post("/plan/generate", {
+        userId: user.id,
+        startDate: today,
+        days,
+        hoursPerDay: user.dailyStudyHours
+      });
 
-  alert("Plan Generated");
+      alert("Plan Generated");
 
+      // 🔥 THIS LINE IS MISSING (VERY IMPORTANT)
+      if (onSuccess) onSuccess();
 
- } catch(err){
-  console.error(err);
- }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-};
+  return (
+    <div className="card">
 
-return(
-<div className="card">
+      <h3>Generate Plan</h3>
 
-<h3>Generate Plan</h3>
+      <input
+        placeholder="Days"
+        onChange={(e) => setDays(e.target.value)}
+      />
 
-<input placeholder="Days"
-onChange={(e)=>setDays(e.target.value)}
-/>
+      <button onClick={generatePlan}>
+        Generate
+      </button>
 
-<button onClick={generatePlan}>
-Generate
-</button>
-
-</div>
-);
+    </div>
+  );
 }
 
 export default PlanGenerator;
