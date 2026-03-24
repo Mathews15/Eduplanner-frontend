@@ -7,6 +7,10 @@ const [name, setName] = useState("");
 
 if (!user) return null;
 
+const onSuccess = () => {
+    console.log("Success");
+  };
+
 const addSubject = async () => {
 
  if (!name) return alert("Enter subject");
