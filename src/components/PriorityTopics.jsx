@@ -3,52 +3,67 @@ import API from "../services/api";
 
 function PriorityTopics({ refresh }) {
 
-const [topics,setTopics] = useState([]);
+  const [topics, setTopics] = useState([]);
 
-const load = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const load = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  if (!user) {
-    console.log("No user found");
-    return;
-  }
+    if (!user) {
+      console.log("No user found");
+      return;
+    }
 
-  API.get(`/topics/priority/${user.id}`)
-    .then(res => setTopics(res.data))
-    .catch(err => console.error(err));
-};
+    API.get(`/topics/priority/${user.id}`)
+      .then(res => {
+        // 🔥 filter only current user's topics (extra safety)
+        const filtered = res.data.filter(
+          t => t.subject?.user?.id === user.id
+        );
 
-useEffect(()=>{
-  load();
-}, [refresh]); // 🔥 THIS IS KEY
+        setTopics(filtered);
+      })
+      .catch(err => console.error(err));
+  };
 
-return(
-<div className="priority-container">
+  useEffect(() => {
+    load();
+  }, [refresh]);
 
-<h3 className="priority-title">Priority Topics</h3>
+  return (
+    <div className="priority-container">
 
-<table className="priority-table">
+      <h3 className="priority-title">Priority Topics</h3>
 
-<thead>
-<tr>
-<th>Subject</th>
-<th>Topic</th>
-</tr>
-</thead>
+      <table className="priority-table">
 
-<tbody>
-{topics.map(t=>(
-<tr key={t.id}>
-<td>{t.subject.name}</td>
-<td>{t.name}</td>
-</tr>
-))}
-</tbody>
+        <thead>
+          <tr>
+            <th>Subject</th>
+            <th>Topic</th>
+          </tr>
+        </thead>
 
-</table>
+        <tbody>
+          {topics.length === 0 ? (
+            <tr>
+              <td colSpan="2" style={{ textAlign: "center" }}>
+                No priority topics
+              </td>
+            </tr>
+          ) : (
+            topics.map(t => (
+              <tr key={t.id}>
+                <td>{t.subject?.name || "No Subject"}</td>
+                <td>{t.name}</td>
+              </tr>
+            ))
+          )}
+        </tbody>
 
-</div>
-);
+      </table>
+
+    </div>
+  );
 }
 
 export default PriorityTopics;
