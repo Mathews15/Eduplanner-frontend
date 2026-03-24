@@ -7,9 +7,6 @@ const [name, setName] = useState("");
 
 if (!user) return null;
 
-const onSuccess = () => {
-    console.log("Success");
-  };
 
 const addSubject = async () => {
 
@@ -19,7 +16,6 @@ const addSubject = async () => {
   await API.post(`/subjects/${user.id}`, { name });
   alert("Subject Added");
   setName("");
-  onSuccess();
  } catch (err) {
   console.error(err);
  }
