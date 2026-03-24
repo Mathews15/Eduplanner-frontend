@@ -10,13 +10,6 @@ function App(){
 const [user,setUser] = useState(null);
 const [showRegister,setShowRegister] = useState(false);
 
-useEffect(() => {
-  const storedUser = localStorage.getItem("user");
-  if (storedUser) {
-    setUser(JSON.parse(storedUser));
-  }
-}, []);
-
 return(
 
 <div>
