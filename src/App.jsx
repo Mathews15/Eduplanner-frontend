@@ -1,54 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
 import "./styles/styles.css";
 
-function App(){
+function App() {
+  // ✅ FIX 1: Initialize user from localStorage so reload doesn't logout
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
 
-const [user,setUser] = useState(null);
-const [showRegister,setShowRegister] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
 
-return(
+  // ✅ FIX 1: Sync user to localStorage on every change
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [user]);
 
-<div>
+  return (
+    <div>
+      <Navbar user={user} setUser={setUser} setShowRegister={setShowRegister} />
 
-<Navbar
-user={user}
-setUser={setUser}
-setShowRegister={setShowRegister}
-/>
-
-{user ? (
-
-/* AFTER LOGIN SHOW DASHBOARD */
-
-<div className="page">
-  <Dashboard user={user}/>
-</div>
-
-) : showRegister ? (
-
-/* SHOW REGISTER PAGE */
-
-<Register setShowRegister={setShowRegister}/>
-
-) : (
-
-/* SHOW LOGIN PAGE */
-
-<Login
-setUser={setUser}
-setShowRegister={setShowRegister}
-/>
-
-)}
-
-</div>
-
-)
-
+      {user ? (
+        <div className="page">
+          <Dashboard user={user} />
+        </div>
+      ) : showRegister ? (
+        <Register setShowRegister={setShowRegister} />
+      ) : (
+        <Login setUser={setUser} setShowRegister={setShowRegister} />
+      )}
+    </div>
+  );
 }
 
 export default App;

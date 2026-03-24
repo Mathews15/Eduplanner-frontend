@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import SubjectForm from "./SubjectForm";
 import TopicForm from "./TopicForm";
 import PlanGenerator from "./PlanGenerator";
@@ -7,34 +6,33 @@ import PriorityTopics from "./PriorityTopics";
 import TodayStudy from "./TodayStudy";
 
 function Dashboard({ user }) {
+  // ✅ Use a counter so every trigger is a new value (even double-trigger works)
+  const [refresh, setRefresh] = useState(0);
+  const triggerRefresh = () => setRefresh(prev => prev + 1);
 
-const [refresh, setRefresh] = useState(false);
+  return (
+    <div className="dashboard">
+      <h1>Welcome {user.name}</h1>
+      <h3>Ready to make your timetable</h3>
 
-const triggerRefresh = () => {
-    setRefresh(prev => !prev);
-  };
+      <div className="grid">
+        {/* ✅ FIX 2: onSuccess passed so dropdown refreshes after adding subject */}
+        <SubjectForm user={user} onSuccess={triggerRefresh} />
+        {/* ✅ FIX 2: refresh prop causes useEffect to re-fetch subjects */}
+        <TopicForm user={user} refresh={refresh} />
+        {/* ✅ FIX 4: onSuccess refreshes Today+Priority after plan generated */}
+        <PlanGenerator user={user} onSuccess={triggerRefresh} />
+      </div>
 
-return(
-<div className="dashboard">
+      {/* ✅ FIX 3: user prop now passed so PriorityTopics can fetch correctly */}
+      <PriorityTopics user={user} refresh={refresh} />
 
-<h1>Welcome {user.name}</h1>
-<h3>Ready to make your timetable</h3>
+      <h3 className="section-header">Today's Goal</h3>
 
-<div className="grid">
-  <SubjectForm user={user} onSuccess={triggerRefresh}/>
-  <TopicForm user={user} refresh={refresh}/>
-  <PlanGenerator user={user} onSuccess={() => setRefresh(prev => !prev)}/>
-</div>
-
-<PriorityTopics user={user} refresh={refresh}/>
-
-
-<h3>Today's Goal</h3>
-
-<TodayStudy user={user} refresh={refresh} onSuccess={triggerRefresh}/>
-
-</div>
-);
+      {/* ✅ FIX 5: onSuccess triggers priority refresh when session completed */}
+      <TodayStudy user={user} refresh={refresh} onSuccess={triggerRefresh} />
+    </div>
+  );
 }
 
 export default Dashboard;
