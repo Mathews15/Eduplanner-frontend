@@ -3,10 +3,11 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import Navbar from "./components/Navbar";
+import HomePage from "./components/HomePage";
+import Footer from "./components/Footer";
 import "./styles/styles.css";
 
 function App() {
-  // ✅ FIX 1: Initialize user from localStorage so reload doesn't logout
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem("user");
@@ -16,9 +17,8 @@ function App() {
     }
   });
 
-  const [showRegister, setShowRegister] = useState(false);
+  const [view, setView] = useState("home");
 
-  // ✅ FIX 1: Sync user to localStorage on every change
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
@@ -27,19 +27,39 @@ function App() {
     }
   }, [user]);
 
-  return (
-    <div>
-      <Navbar user={user} setUser={setUser} setShowRegister={setShowRegister} />
+  const handleSetUser = (u) => {
+    setUser(u);
+    setView("home");
+  };
 
-      {user ? (
-        <div className="page">
-          <Dashboard user={user} />
-        </div>
-      ) : showRegister ? (
-        <Register setShowRegister={setShowRegister} />
-      ) : (
-        <Login setUser={setUser} setShowRegister={setShowRegister} />
-      )}
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Navbar
+        user={user}
+        setUser={(u) => { setUser(u); setView("home"); }}
+        setShowRegister={() => setView("register")}
+        setShowLogin={() => setView("login")}
+        setShowHome={() => setView("home")}
+      />
+
+      <div style={{ flex: 1 }}>
+        {user ? (
+          <div className="page">
+            <Dashboard user={user} />
+          </div>
+        ) : view === "register" ? (
+          <Register setShowRegister={(v) => setView(v ? "register" : "home")} />
+        ) : view === "login" ? (
+          <Login setUser={handleSetUser} setShowRegister={() => setView("register")} />
+        ) : (
+          <HomePage
+            setShowRegister={() => setView("register")}
+            setShowLogin={() => setView("login")}
+          />
+        )}
+      </div>
+
+      {!user && <Footer />}
     </div>
   );
 }
