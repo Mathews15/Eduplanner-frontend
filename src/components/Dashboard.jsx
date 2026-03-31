@@ -32,6 +32,7 @@ function Dashboard({ user }) {
       {/* ✅ FIX 5: onSuccess triggers priority refresh when session completed */}
       <TodayStudy user={user} refresh={refresh} onSuccess={triggerRefresh} />
     </div>
+    
   );
 }
 
